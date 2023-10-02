@@ -123,10 +123,6 @@ spec:
       affinity:
         {{- tpl . $ | nindent 8 }}
       {{- end }}
-      {{- with .Values.read.dnsConfig }}
-      dnsConfig:
-        {{- tpl . $ | nindent 8 }}
-      {{- end }}
       {{- with .Values.read.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -162,9 +158,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
   volumeClaimTemplates:
-    - apiVersion: v1	
-      kind: PersistentVolumeClaim
-      metadata:
+    - metadata:
         name: data
       spec:
         accessModes:

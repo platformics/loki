@@ -261,9 +261,6 @@ azure:
   {{- with .accountKey }}
   account_key: {{ . }}
   {{- end }}
-  {{- with .connectionString }}
-  connection_string: {{ . }}
-  {{- end }}
   container_name: {{ $.Values.loki.storage.bucketNames.chunks }}
   use_managed_identity: {{ .useManagedIdentity }}
   use_federated_token: {{ .useFederatedToken }}
@@ -272,9 +269,6 @@ azure:
   {{- end }}
   {{- with .requestTimeout }}
   request_timeout: {{ . }}
-  {{- end }}
-  {{- with .endpointSuffix }}
-  endpoint_suffix: {{ . }}
   {{- end }}
 {{- end -}}
 {{- else -}}
@@ -334,9 +328,6 @@ azure:
   {{- with .accountKey }}
   account_key: {{ . }}
   {{- end }}
-  {{- with .connectionString }}
-  connection_string: {{ . }}
-  {{- end }}
   container_name: {{ $.Values.loki.storage.bucketNames.ruler }}
   use_managed_identity: {{ .useManagedIdentity }}
   use_federated_token: {{ .useFederatedToken }}
@@ -345,9 +336,6 @@ azure:
   {{- end }}
   {{- with .requestTimeout }}
   request_timeout: {{ . }}
-  {{- end }}
-  {{- with .endpointSuffix }}
-  endpoint_suffix: {{ . }}
   {{- end }}
 {{- end -}}
 {{- else }}
@@ -501,9 +489,9 @@ Params:
 */}}
 {{- define "loki.ingress.serviceName" -}}
 {{- if (eq .svcName "singleBinary") }}
-{{- printf "%s" (include "loki.singleBinaryFullname" .ctx) }}
+{{- printf "%s" (include "loki.fullname" .ctx) }}
 {{- else }}
-{{- printf "%s-%s" (include "loki.name" .ctx) .svcName }}
+{{- printf "%s-%s" (include "loki.fullname" .ctx) .svcName }}
 {{- end -}}
 {{- end -}}
 
@@ -529,7 +517,7 @@ Create the service endpoint including port for MinIO.
 {{/* Determine the public host for the Loki cluster */}}
 {{- define "loki.host" -}}
 {{- $isSingleBinary := eq (include "loki.deployment.isSingleBinary" .) "true" -}}
-{{- $url := printf "%s.%s.svc.%s.:%s" (include "loki.gatewayFullname" .) .Release.Namespace .Values.global.clusterDomain (.Values.gateway.service.port | toString)  }}
+{{- $url := printf "%s.%s.svc.%s." (include "loki.gatewayFullname" .) .Release.Namespace .Values.global.clusterDomain }}
 {{- if and $isSingleBinary (not .Values.gateway.enabled)  }}
   {{- $url = printf "%s.%s.svc.%s.:3100" (include "loki.singleBinaryFullname" .) .Release.Namespace .Values.global.clusterDomain }}
 {{- end }}
@@ -727,11 +715,6 @@ http {
 
     # QueryScheduler
     location = /scheduler/ring {
-      proxy_pass       {{ $backendUrl }}$request_uri;
-    }
-
-    # Config
-    location = /config {
       proxy_pass       {{ $backendUrl }}$request_uri;
     }
 

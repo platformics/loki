@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.9.2
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: podlogs.monitoring.grafana.com
 spec:
@@ -56,7 +56,7 @@ spec:
                     type: array
                 type: object
               pipelineStages:
-                description: Pipeline stages for this pod. Pipeline stages support
+                description: Pipeline stages for this pod. Pipeline stages allow for
                   transforming and filtering log lines.
                 items:
                   description: "PipelineStageSpec defines an individual pipeline stage.
@@ -78,17 +78,17 @@ spec:
                         logs.
                       properties:
                         dropCounterReason:
-                          description: Every time a log line is dropped, the metric
-                            logentry_dropped_lines_total is incremented. A "reason"
+                          description: Every time a log line is dropped the metric
+                            logentry_dropped_lines_total will be incremented. A "reason"
                             label is added, and can be customized by providing a custom
-                            value here. Defaults to "drop_stage".
+                            value here. Defaults to "drop_stage."
                           type: string
                         expression:
-                          description: "RE2 regular expression. \n If source is provided,
-                            the regex attempts to match the source. \n If no source
-                            is provided, then the regex attempts to attach the log
-                            line. \n If the provided regex matches the log line or
-                            a provided source, the line is dropped."
+                          description: "RE2 regular exprssion. \n If source is provided,
+                            the regex will attempt to match the source. \n If no source
+                            is provided, then the regex will attempt to attach the
+                            log line. \n If the provided regex matches the log line
+                            or a provided source, the line will be dropped."
                           type: string
                         longerThan:
                           description: LongerThan will drop a log line if it its content
@@ -98,7 +98,7 @@ spec:
                         olderThan:
                           description: OlderThan will be parsed as a Go duration.
                             If the log line's timestamp is older than the current
-                            time minus the provided duration, it will be dropped.
+                            time minus the provided duration it will be dropped.
                           type: string
                         source:
                           description: Name from the extract data to parse. If empty,
@@ -122,10 +122,10 @@ spec:
                           description: "Set of the key/value pairs of JMESPath expressions.
                             The key will be the key in the extracted data while the
                             expression will be the value, evaluated as a JMESPath
-                            from the source data. \n Literal JMESPath expressions
-                            can be used by wrapping a key in double quotes, which
-                            then must be wrapped again in single quotes in YAML so
-                            they get passed to the JMESPath parser."
+                            from the source data. \n Literal JMESPath exprssions can
+                            be done by wrapping a key in double quotes, which then
+                            must be wrapped again in single quotes in YAML so they
+                            get passed to the JMESPath parser."
                           type: object
                         source:
                           description: Name from the extracted data to parse as JSON.
@@ -156,25 +156,6 @@ spec:
                         of the label. If the value is not provided, it defaults to
                         match the key."
                       type: object
-                    limit:
-                      description: Limit is a rate-limiting stage that throttles logs
-                        based on several options.
-                      properties:
-                        burst:
-                          description: The cap in the quantity of burst lines that
-                            Promtail will push to Loki.
-                          type: integer
-                        drop:
-                          description: "When drop is true, log lines that exceed the
-                            current rate limit are discarded. When drop is false,
-                            log lines that exceed the current rate limit wait to enter
-                            the back pressure mode. \n Defaults to false."
-                          type: boolean
-                        rate:
-                          description: The rate limit in lines per second that Promtail
-                            will push to Loki.
-                          type: integer
-                      type: object
                     match:
                       description: Match is a filtering stage that conditionally applies
                         a set of stages or drop entries when a log entry matches a
@@ -183,13 +164,13 @@ spec:
                         action:
                           description: Determines what action is taken when the selector
                             matches the log line. Can be keep or drop. Defaults to
-                            keep. When set to drop, entries are dropped and no later
-                            metrics are recorded. Stages must be empty when dropping
-                            metrics.
+                            keep. When set to drop, entries will be dropped and no
+                            later metrics will be recorded. Stages must be empty when
+                            dropping metrics.
                           type: string
                         dropCounterReason:
-                          description: Every time a log line is dropped, the metric
-                            logentry_dropped_lines_total is incremented. A "reason"
+                          description: Every time a log line is dropped the metric
+                            logentry_dropped_lines_total will be incremented. A "reason"
                             label is added, and can be customized by providing a custom
                             value here. Defaults to "match_stage."
                           type: string
@@ -205,7 +186,7 @@ spec:
                           type: string
                         stages:
                           description: "Nested set of pipeline stages to execute when
-                            action is keep and the log line matches selector. \n An
+                            action: keep and the log line matches selector. \n An
                             example value for stages may be: \n stages: | - json:
                             {} - labelAllow: [foo, bar] \n Note that stages is a string
                             because SIG API Machinery does not support recursive types,
@@ -242,7 +223,7 @@ spec:
                               type: string
                             type: array
                           countEntryBytes:
-                            description: "If true all log line bytes are counted.
+                            description: "If true all log line bytes will be counted.
                               Can only be set with matchAll: true and action: add.
                               \n Only valid for type: counter."
                             type: boolean
@@ -250,7 +231,7 @@ spec:
                             description: Sets the description for the created metric.
                             type: string
                           matchAll:
-                            description: "If true, all log lines are counted without
+                            description: "If true all log lines will be counted without
                               attempting to match the source to the extracted map.
                               Mutually exclusive with value. \n Only valid for type:
                               counter."
@@ -259,8 +240,8 @@ spec:
                             description: "Label values on metrics are dynamic which
                               can cause exported metrics to go stale. To prevent unbounded
                               cardinality, any metrics not updated within MaxIdleDuration
-                              are removed. \n Must be greater or equal to 1s. Defaults
-                              to 5m."
+                              will be removed. \n Must be greater or equal to 1s.
+                              Defaults to 5m."
                             type: string
                           prefix:
                             description: Sets the custom prefix name for the metric.
@@ -276,14 +257,14 @@ spec:
                             type: string
                           value:
                             description: Filters down source data and only changes
-                              the metric if the targeted value matches the provided
-                              string exactly. If not present, all data matches.
+                              the metric if the targeted value exactly matches the
+                              provided string. If not present, all data will match.
                             type: string
                         required:
                         - action
                         - type
                         type: object
-                      description: Metrics is an action stage that supports defining
+                      description: Metrics is an action stage that allows for defining
                         and updating metrics based on data from the extracted map.
                         Created metrics are not pushed to Loki or Prometheus and are
                         instead exposed via the /metrics endpoint of the Grafana Agent
@@ -336,7 +317,7 @@ spec:
                             containers to avoid out of order errors.
                           type: boolean
                         labels:
-                          description: Name from extracted data or line labels. Required.
+                          description: Name from extracted data or line labels. Requiried.
                             Labels provided here are automatically removed from output
                             labels.
                           items:
@@ -390,7 +371,7 @@ spec:
                             If empty, defaults to using the log message.
                           type: string
                         template:
-                          description: Go template string to use. Required. In addition
+                          description: Go template string to use. Required. In additional
                             to normal template functions, ToLower, ToUpper, Replace,
                             Trim, TrimLeft, TrimRight, TrimPrefix, and TrimSpace are
                             also available.
@@ -405,18 +386,14 @@ spec:
                         data map. If the field is missing, the default LogsClientSpec.tenantId
                         will be used.
                       properties:
-                        label:
-                          description: Name from labels whose value should be set
-                            as tenant ID. Mutually exclusive with source and value.
-                          type: string
                         source:
                           description: Name from extracted data to use as the tenant
-                            ID. Mutually exclusive with label and value.
+                            ID. Mutually exclusive with value.
                           type: string
                         value:
                           description: Value to use for the template ID. Useful when
                             this stage is used within a conditional pipeline such
-                            as match. Mutually exclusive with label and source.
+                            as match. Mutually exclusive with source.
                           type: string
                       type: object
                     timestamp:
@@ -473,27 +450,15 @@ spec:
                     action:
                       default: replace
                       description: Action to perform based on regex matching. Default
-                        is 'replace'. uppercase and lowercase actions require Prometheus
-                        >= 2.36.
+                        is 'replace'
                       enum:
                       - replace
-                      - Replace
                       - keep
-                      - Keep
                       - drop
-                      - Drop
                       - hashmod
-                      - HashMod
                       - labelmap
-                      - LabelMap
                       - labeldrop
-                      - LabelDrop
                       - labelkeep
-                      - LabelKeep
-                      - lowercase
-                      - Lowercase
-                      - uppercase
-                      - Uppercase
                       type: string
                     modulus:
                       description: Modulus to take of the hash of the source label
@@ -575,10 +540,15 @@ spec:
                       are ANDed.
                     type: object
                 type: object
-                x-kubernetes-map-type: atomic
             required:
             - selector
             type: object
         type: object
     served: true
     storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

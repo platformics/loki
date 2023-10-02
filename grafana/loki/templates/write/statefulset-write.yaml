@@ -5,11 +5,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "loki.writeFullname" . }}
-  namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "loki.writeLabels" . | nindent 4 }}
     app.kubernetes.io/part-of: memberlist
-  {{- if or (not (empty .Values.loki.annotations)) (not (empty .Values.backend.annotations))}}
   annotations:
     {{- with .Values.loki.annotations }}
     {{- toYaml . | nindent 4 }}
@@ -17,7 +15,6 @@ metadata:
     {{- with .Values.write.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- end }}
 spec:
 {{- if not .Values.write.autoscaling.enabled }}
   replicas: {{ .Values.write.replicas }}
@@ -142,10 +139,6 @@ spec:
       affinity:
         {{- tpl . $ | nindent 8 }}
       {{- end }}
-      {{- with .Values.write.dnsConfig }}
-      dnsConfig:
-        {{- tpl . $ | nindent 8 }}
-      {{- end }}
       {{- with .Values.write.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -178,9 +171,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
   volumeClaimTemplates:
-    - apiVersion: v1
-      kind: PersistentVolumeClaim
-      metadata:
+    - metadata:
         name: data
       spec:
         accessModes:
